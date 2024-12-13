@@ -28,6 +28,17 @@ extension PaymentSession {
     }
     
     public func presentPaymentSheet(viewController: UIViewController, configuration: PaymentSheet.Configuration, completion: @escaping (PaymentSheetResult) -> ()){
+        self.mockSdk?.performOperationWithFatalError(completion: {
+            result in
+            switch result {
+            case .success(let message):
+                print("Success: \(message)")
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
+        self.mockSdk?.fetchConfiguration()
+        
         PaymentSession.isPresented = true
         let paymentSheet = PaymentSheet(paymentIntentClientSecret: PaymentSession.paymentIntentClientSecret ?? "", configuration: configuration)
         paymentSheet.present(from: viewController, completion: completion)
